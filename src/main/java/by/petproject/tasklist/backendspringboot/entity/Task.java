@@ -19,8 +19,6 @@ public class Task {
     private Priority priority;
     private Category category;
 
-    // указываем, что поле заполняется в БД
-    // нужно, когда добавляем новый объект и он возвращается уже с новым id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
@@ -49,16 +47,12 @@ public class Task {
         return date;
     }
 
-    // ссылка на объект Priority
-    // одна задача имеет ссылку на один объект
     @ManyToOne
     @JoinColumn(name = "priority_id", referencedColumnName = "id")
     public Priority getPriority() {
         return priority;
     }
 
-    // ссылка на объект Category
-    // одна задача имеет ссылку на один объект
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     public Category getCategory() {
