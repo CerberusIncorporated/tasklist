@@ -1,5 +1,6 @@
 package by.petproject.tasklist.backendspringboot.controller;
 
+import by.petproject.tasklist.backendspringboot.entity.Category;
 import by.petproject.tasklist.backendspringboot.entity.Priority;
 import by.petproject.tasklist.backendspringboot.repo.PriorityRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -17,6 +19,11 @@ public class PriorityController {
 
     public PriorityController(PriorityRepository priorityRepository) {
         this.priorityRepository = priorityRepository;
+    }
+
+    @GetMapping("/all")
+    public List<Priority> findAll(){
+        return priorityRepository.findAllByOrderByIdAsc();
     }
 
     @PostMapping("/add")

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 
@@ -20,6 +21,11 @@ public class CategoryController {
 
     public CategoryController(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
+    }
+
+    @GetMapping("/all")
+    public List<Category> findAll(){
+        return categoryRepository.findAllByOrderByTitleAsc();
     }
 
     @PostMapping("/add")
