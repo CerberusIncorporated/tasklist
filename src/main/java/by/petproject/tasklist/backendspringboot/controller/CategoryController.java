@@ -2,6 +2,7 @@ package by.petproject.tasklist.backendspringboot.controller;
 
 import by.petproject.tasklist.backendspringboot.entity.Category;
 import by.petproject.tasklist.backendspringboot.repo.CategoryRepository;
+import by.petproject.tasklist.backendspringboot.search.CategorySearchValues;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -86,6 +87,12 @@ public class CategoryController {
             return new ResponseEntity("id= "+id+" not found", HttpStatus.NOT_ACCEPTABLE);
         }
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<Category>> search(@RequestBody CategorySearchValues categorySearchValues){
+
+        return ResponseEntity.ok(categoryRepository.findByTitle(categorySearchValues.getText()));
     }
 
 }

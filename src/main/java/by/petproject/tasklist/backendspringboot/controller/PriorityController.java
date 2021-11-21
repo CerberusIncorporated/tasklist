@@ -1,8 +1,8 @@
 package by.petproject.tasklist.backendspringboot.controller;
 
-import by.petproject.tasklist.backendspringboot.entity.Category;
 import by.petproject.tasklist.backendspringboot.entity.Priority;
 import by.petproject.tasklist.backendspringboot.repo.PriorityRepository;
+import by.petproject.tasklist.backendspringboot.search.PrioritySearchValues;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -90,5 +90,11 @@ public class PriorityController {
             return new ResponseEntity("id="+id+" not found", HttpStatus.NOT_ACCEPTABLE);
         }
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<Priority>> search(@RequestBody PrioritySearchValues prioritySearchValues){
+
+        return ResponseEntity.ok(priorityRepository.findByTitle(prioritySearchValues.getText()));
     }
 }
