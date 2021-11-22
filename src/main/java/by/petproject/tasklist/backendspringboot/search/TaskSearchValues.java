@@ -16,5 +16,11 @@ public class TaskSearchValues {
     private Long priorityId;
     private Long categoryId;
 
+    private Integer pageNumber;
+    private Integer pageSize;
+
+    private String sortColumn;
+    private String sortDirectional;
+
 
 }
