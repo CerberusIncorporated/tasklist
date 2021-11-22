@@ -1,33 +1,32 @@
 package by.petproject.tasklist.backendspringboot.controller;
 
-import by.petproject.tasklist.backendspringboot.entity.Category;
-import by.petproject.tasklist.backendspringboot.repo.CategoryRepository;
-import by.petproject.tasklist.backendspringboot.search.CategorySearchValues;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import by.petproject.tasklist.backendspringboot.entity.Category;
+import by.petproject.tasklist.backendspringboot.search.CategorySearchValues;
+import by.petproject.tasklist.backendspringboot.service.CategoryService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
-
 @RestController
-@RequestMapping("/category")
+@RequestMapping ("/category")
 public class CategoryController {
 
+    private CategoryService categoryService;
 
-    private CategoryRepository categoryRepository;
-
-
-    public CategoryController(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
+
 
     @GetMapping("/all")
-    public List<Category> findAll(){
-        return categoryRepository.findAllByOrderByTitleAsc();
+    public List<Category> findAll() {
+        return categoryService.findAllByOrderByTitleAsc();
     }
+
 
     @PostMapping("/add")
     public ResponseEntity<Category> add(@RequestBody Category category){
@@ -41,12 +40,11 @@ public class CategoryController {
         }
 
 
-        return ResponseEntity.ok(categoryRepository.save(category));
+        return ResponseEntity.ok(categoryService.add(category));
     }
 
     @PutMapping("/update")
     public ResponseEntity update(@RequestBody Category category){
-
         if (category.getId() == null || category.getId() == 0) {
             return new ResponseEntity("missed param: id", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -55,8 +53,9 @@ public class CategoryController {
             return new ResponseEntity("missed param: title", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        return ResponseEntity.ok(categoryRepository.save(category));
+        categoryService.update(category);
 
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/id/{id}")
@@ -64,11 +63,9 @@ public class CategoryController {
 
         Category category = null;
 
-        // можно обойтись и без try-catch, тогда будет возвращаться полная ошибка (stacktrace)
-        // здесь показан пример, как можно обрабатывать исключение и отправлять свой текст/статус
         try{
-            category = categoryRepository.findById(id).get();
-        }catch (NoSuchElementException e){ // если объект не будет найден
+            category = categoryService.findById(id);
+        }catch (NoSuchElementException e){
             e.printStackTrace();
             return new ResponseEntity("id="+id+" not found", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -81,18 +78,17 @@ public class CategoryController {
     public ResponseEntity delete(@PathVariable Long id) {
 
         try {
-            categoryRepository.deleteById(id);
+            categoryService.deleteById(id);
         }catch (EmptyResultDataAccessException e){
             e.printStackTrace();
-            return new ResponseEntity("id= "+id+" not found", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity("id="+id+" not found", HttpStatus.NOT_ACCEPTABLE);
         }
+
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/search")
     public ResponseEntity<List<Category>> search(@RequestBody CategorySearchValues categorySearchValues){
-
-        return ResponseEntity.ok(categoryRepository.findByTitle(categorySearchValues.getText()));
+        return ResponseEntity.ok(categoryService.findByTitle(categorySearchValues.getText()));
     }
-
 }

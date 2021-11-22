@@ -20,7 +20,7 @@ public class TaskSearchValues {
     private Integer pageSize;
 
     private String sortColumn;
-    private String sortDirectional;
+    private String sortDirection;
 
 
 }
